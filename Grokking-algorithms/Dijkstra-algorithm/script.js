@@ -1,95 +1,54 @@
-class Graph {
-  constructor() {
-    this.nodes = [];
-    this.adjacencyList = [];
-  }
+const nodes = [0, 1, 2, 3];
+const edges = [
+  [0, 1, 10],
+  [0, 2, 3],
+  [1, 2, 4],
+  [2, 3, 11]
+]
 
-  addNode(node) {
-    this.nodes.push(node);
-    this.adjacencyList[node] = [];
-  }
-  addEdge(node1, node2, weight) {
-    this.adjacencyList[node1].push({ node: node2, weight: weight });
-    this.adjacencyList[node2].push({ node: node1, weight: weight });
-  }
-  findPathWithDijkstra(startNode, endNode) {
-    let times = [];
-    let backtrace = [];
-    let pq = new PriorityQueue();
-    times[startNode] = 0;
+function getWeightMatrix(nodes, edges, unoriented) {
+  let matrix = [];
+  for (let i = 0; i < nodes.length; i++) {
+    let row = [];
 
-    this.nodes.forEach(node => {
-      if (node !== startNode) {
-        times[node] = Infinity
-      }
-    });
-    pq.enqueue([startNode, 0]);
-    while (!pq.isEmpty()) {
-      let shortestStep = pq.dequeue();
-      let currentNode = shortestStep[0];
-
-      this.adjacencyList[currentNode].forEach(neighbor => {
-        let time = times[currentNode] + neighbor.weight;
-        if (time < times[neighbor.node]) {
-          times[neighbor.node] = time;
-          backtrace[neighbor.node] = currentNode;
-          pq.enqueue([neighbor.node, time]);
-        }
-      });
+    for (let j = 0; j < nodes.length; j++) {
+      row.push(0);
     }
-    let path = [endNode];
-    let lastStep = endNode;
-
-    while (lastStep !== startNode) {
-      path.unshift(backtrace[lastStep])
-      lastStep = backtrace[lastStep]
-    }
-
-    return `Path is ${path} and time is ${times[endNode]}`
+    matrix.push(row);
   }
-}
-class PriorityQueue {
-  constructor() {
-    this.collection = [];
-  }
-  enqueue(element) {
-    if (this.isEmpty()) {
-      this.collection.push(element);
-    } else {
-      let added = false;
-      for (let i = 1; i <= this.collection.length; i++) {
-        if (element[1] < this.collection[i - 1][1]) {
-          this.collection.splice(i - 1, 0, element);
-          added = true;
-          break;
-        }
-      }
-      if (!added) {
-        this.collection.push(element);
-      }
-    }
-  };
-  dequeue() {
-    let value = this.collection.shift();
-    return value;
-  };
 
-  isEmpty() {
-    return (this.collection.length === 0)
-  };
+  for (elem of edges) {
+    let [a, b, weight] = elem;
+    matrix[a][b] = weight;
+
+    if (unoriented) {
+      matrix[b][a] = weight;
+    }
+  }
+  return matrix;
 }
 
+function Dijkstra(matrix, startNode = 0) {
+  let distance = new Array(matrix.length).fill(Infinity);
+  distance[0] = 0;
+  let rows = matrix.length;
+  let cols = matrix.length;
 
-let testGraph01 = new Graph();
-//creating graphs
-testGraph01.addNode("A");
-testGraph01.addNode("B");
-testGraph01.addNode("C");
-testGraph01.addNode("D");
+  for (let i = 0; i < rows; i++) {
+    // Недоступные вершины не могут быть использованы в качестве транзитных точек перехода
+    if (distance[i] < Infinity) {
+      for (let j = 0; j < cols; j++) {
+        // Например, сравнивая размер расстояния [i] + матрица [i] [j] и расстояние [j], чтобы определить, обновлять ли расстояние [j].
+        if (matrix[i][j] + distance[i] < distance[j]) {
+          distance[j] = matrix[i][j] + distance[i];
+        }
+      }
+      console.log(distance);
+    }
+  }
+  return distance
+}
 
-testGraph01.addEdge("A", "B", 10);
-testGraph01.addEdge("C", "D", 2);
-testGraph01.addEdge("D", "B", 7);
-
-
-console.log(testGraph01.findPathWithDijkstra("A", "D"))
+const matrix = getWeightMatrix(nodes, edges, true)
+console.log(matrix);
+console.log(Dijkstra(matrix))

@@ -1,9 +1,11 @@
-const nodes = [0, 1, 2, 3];
+const nodes = [0, 1, 2, 3, 4];
+
 const edges = [
   [0, 1, 10],
-  [0, 2, 3],
-  [1, 2, 4],
-  [2, 3, 11]
+  [1, 3, 20],
+  [2, 1, 1],
+  [3, 2, 1],
+  [3, 4, 30]
 ]
 
 function getWeightMatrix(nodes, edges, unoriented) {
@@ -30,25 +32,41 @@ function getWeightMatrix(nodes, edges, unoriented) {
 
 function Dijkstra(matrix, startNode = 0) {
   let distance = new Array(matrix.length).fill(Infinity);
-  distance[0] = 0;
-  let rows = matrix.length;
-  let cols = matrix.length;
+  let parentNode = new Array(matrix.length).fill(null);
+  let checked = [];
+  let queue = [startNode];
+  distance[startNode] = 0;
 
-  for (let i = 0; i < rows; i++) {
-    // Недоступные вершины не могут быть использованы в качестве транзитных точек перехода
-    if (distance[i] < Infinity) {
-      for (let j = 0; j < cols; j++) {
-        // Например, сравнивая размер расстояния [i] + матрица [i] [j] и расстояние [j], чтобы определить, обновлять ли расстояние [j].
-        if (matrix[i][j] + distance[i] < distance[j]) {
-          distance[j] = matrix[i][j] + distance[i];
-        }
+  while (queue.length > 0) {
+    let currentNode = queue.shift();
+    for (let i = 0; i < matrix[currentNode].length; i++) {
+      let weight = matrix[currentNode][i];
+
+      if (weight && (weight + distance[currentNode] < distance[i])) {
+        distance[i] = weight + distance[currentNode];
+        parentNode[i] = currentNode;
       }
-      console.log(distance);
+    }
+    checked.push(currentNode);
+
+    let min = Infinity;
+    let minIndex = null;
+    for (let i = 0; i < distance.length; i++) {
+      if (!checked.includes(i) && distance[i] < min) {
+        min = distance[i];
+        minIndex = i;
+      }
+    }
+    if (minIndex !== null) {
+      queue.push(minIndex);
     }
   }
-  return distance
+  return {
+    parentNode: parentNode,
+    distance: distance
+  };
 }
 
-const matrix = getWeightMatrix(nodes, edges, true)
+const matrix = getWeightMatrix(nodes, edges, false)
 console.log(matrix);
 console.log(Dijkstra(matrix))

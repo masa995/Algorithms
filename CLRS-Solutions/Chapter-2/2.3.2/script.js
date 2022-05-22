@@ -1,43 +1,32 @@
-function mergeSort(array, start, end) {
-  let arr = array.slice();
-  let answer;
-
-  if (start < end) {
-    let q = Math.floor(arr.length / 2);
-    mergeSort(arr, 0, q);
-    mergeSort(arr, q + 1, arr.length - 1)
-    answer = merge(arr, 0, arr.length - 1, q);
+function mergeSort(array) {
+  if (array.length <= 1) {
+    return array
   }
-  return answer
+
+  let key = Math.floor(array.length / 2)
+  let left = array.slice(0, key);
+  let right = array.slice(key, array.length)
+  return merge(mergeSort(left), mergeSort(right), array.length);
 }
 
-function merge(array, start, end, key) {
-  let result = [];
-  let left = array.slice(start, q);
-  let right = array.slice(q + 1, array.length - 1);
-  let j = 1;
-  let k = 1;
-  for (let i = 0; i < array.length; i++) {
-    if (left.length === 0) {
-      result[i] = right[k]
-      k++
-    }
-    else if (right.length === 0) {
-      result[i] = left[j]
-      j++
-    }
-    else if (left[j] <= right[k]) {
-      result[i] = left[j];
-      j++;
-    }
-    else if (left[j] >= right[k]) {
-      result[i] = right[k]
-      k++;
+function merge(arrLeft, arrRight, arrLength) {
+  const result = [];
+
+  for (let k = 0; k < arrLength; k++) {
+    if (arrLeft.length === 0) {
+      return [...result, ...arrRight]
+    } else if (arrRight.length === 0) {
+      return [...result, ...arrLeft]
+    } else if (arrLeft[0] <= arrRight[0]) {
+      result.push(arrLeft.shift());
+    } else if (arrLeft[0] > arrRight[0]) {
+      result.push(arrRight.shift());
     }
   }
-  return result;
 }
 
+
+// const nums = [8, 0, 1, 4, 6, 5, 9, 7, 2, 3];
 const nums = [1, 3, 0, 1, 55, 9];
-console.log(mergeSort(nums));
 console.log('Array nums ' + nums);
+console.log(mergeSort(nums));

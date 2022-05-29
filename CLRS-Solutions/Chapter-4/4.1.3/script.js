@@ -29,7 +29,6 @@ function getMaxCrossingSubarray(array, start, end, mid) {
   let left;
   let right;
 
-
   for (let i = mid; i >= start; i--) {
     sum += array[i];
     if (leftSum < sum) {
@@ -47,39 +46,42 @@ function getMaxCrossingSubarray(array, start, end, mid) {
     }
   }
   let result = rightSum + leftSum;
+
   return {
-    result: result,
-    start: start,
-    end: end
+    sum: result,
+    left: left,
+    right: right
   };
 }
 
 function getMaxRecursiveSubarray(array, start, end) {
   if (start === end) {
     return {
-      result: array[start],
-      start: start,
-      end: start
+      sum: array[start],
+      left: start,
+      right: end
     }
   }
+
 
   let mid = Math.floor((start + end) / 2);
   let leftPart = getMaxRecursiveSubarray(array, start, mid);
   let rightPart = getMaxRecursiveSubarray(array, mid + 1, end);
   let crossPart = getMaxCrossingSubarray(array, start, end, mid);
 
-  if (leftPart.result > rightPart.result && leftPart.result > crossPart.result) {
+  if (leftPart.sum >= rightPart.sum && leftPart.sum >= crossPart.sum) {
     return leftPart;
-  } else if (rightPart.result > leftPart.result && rightPart.result > crossPart.result) {
+  } else if (rightPart.sum >= leftPart.sum && rightPart.sum >= crossPart.sum) {
     return rightPart;
-  } else return crossPart;
+  } else {
+    return crossPart;
+  }
 }
 
-const num = [-9, 2, 100, -3, 5];
-//const num = [-1, 2, 3, -9];
-//const num = [2, -1, 2, 3, -9];
-//const num = [13, -3, 25, 20, -3, -16, -23, 18, 20, -7, 12, -5, -22, 15 - 4, 7];
+const num = [1, -1, 2, 3, -9, 18,]; ////18
+//const num = [100, -9, 2, -3, 5]; ////100
+//const num = [2, -1, 2, 3, -9]; ////6
 
+console.log(num);
 console.log(getMaxSubarrayBruteForce(num));
 console.log(getMaxRecursiveSubarray(num, 0, num.length - 1));
-console.log(num);

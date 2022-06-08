@@ -7,7 +7,7 @@ function maxHeapify(arr, i) {
     if (left <= arr.length && arr[left] > arr[i]) {
       largest = left;
     }
-    if (right <= arr.length && arr[right] > arr[i]) {
+    if (right <= arr.length && arr[right] > arr[i] && arr[right] > arr[largest]) {
       largest = right;
     }
 

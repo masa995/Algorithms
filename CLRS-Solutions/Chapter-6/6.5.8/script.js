@@ -1,25 +1,97 @@
-function maxHeapify(arr, i) {
-  let left = 2 * i + 1;
-  let right = 2 * i + 2;
-  let largest;
+class Heap {
+  constructor(arr) {
+    this.heap = [];
 
-  while ((arr[i] < arr[left]) || (arr[i] < arr[right])) {
-    if (left <= arr.length && arr[left] > arr[i]) {
-      largest = left;
+    this.new(arr);
+  }
+
+  new(array) {
+    let result = array.slice();
+    let heapLength = Math.floor(result.length / 2);
+    for (let i = heapLength; i >= 0; i--) {
+      this.maxHeapify(result, i);
     }
-    if (right <= arr.length && arr[right] > arr[i] && arr[right] > arr[largest]) {
-      largest = right;
+    return this.heap = result.slice(0);
+  }
+
+  heapMaximum() {
+    return this.heap[0];
+  }
+
+  heapExtractMAX() {
+    if (this.heap.length < 1) {
+      console.error('Очередь пуста');
+      return;
     }
 
-    [arr[i], arr[largest]] = [arr[largest], arr[i]];
-    left = 2 * largest + 1;
-    right = 2 * largest + 2;
-    i = largest;
+    let max = this.heap[0];
+    this.heap[0] = this.heap.length - 1;
+    this.heap.shift();
+    this.maxHeapify(this.heap, 0);
+    return max;
+  }
+
+  maxHeapInsert(elem) {
+    this.heap.push(elem);
+    this.increaseKey(this.heap.length - 1, elem);
+  }
+
+  heapDelete(elem) {
+    let elemIndex = this.heap.indexOf(elem);
+    let lastIndex = this.heap.length - 1;
+
+    if (elem === -1) {
+      console.error('Элемент не найден');
+      return
+    }
+
+    [this.heap[elemIndex], this.heap[lastIndex]] = [this.heap[lastIndex], this.heap[elemIndex]];
+    this.heap.pop();
+    this.maxHeapify(this.heap, elemIndex);
+  }
+
+  increaseKey(i, key) {
+    let parent = Math.floor((i - 1) / 2);
+    if (key > this.heap[i]) {
+      console.error('Новый ключ меньше текущего');
+      return;
+    }
+
+    this.heap[i] = key;
+    while (i >= 0 && this.heap[parent] < this.heap[i]) {
+      [this.heap[parent], this.heap[i]] = [this.heap[i], this.heap[parent]];
+      i = parent;
+      parent = Math.floor((i - 1) / 2);
+    }
+  }
+
+  maxHeapify(arr, i) {
+    let left = 2 * i + 1;
+    let right = 2 * i + 2;
+    let largest;
+
+    while ((arr[i] < arr[left]) || (arr[i] < arr[right])) {
+      largest = i;
+      if (left <= arr.length && arr[left] > arr[i]) {
+        largest = left;
+      }
+      if (right <= arr.length && arr[right] > arr[i] && arr[right] > arr[largest]) {
+        largest = right;
+      }
+
+      [arr[i], arr[largest]] = [arr[largest], arr[i]];
+      left = 2 * largest + 1;
+      right = 2 * largest + 2;
+      i = largest;
+    }
   }
 }
 
-
-let arr = [27, 17, 3, 16, 13, 10, 1, 5, 7, 12, 4, 8, 9, 0];
-console.log(arr);
-maxHeapify(arr, 2)
-console.log(arr);
+const arr = [4, 1, 3, 2, 16, 9, 10, 14, 8, 7];
+const heap = new Heap(arr);
+console.log(heap);
+console.log(heap.heapMaximum());
+heap.maxHeapInsert(20);
+heap.heapExtractMAX();
+heap.heapDelete(10);
+console.log(heap);

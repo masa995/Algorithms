@@ -39,6 +39,7 @@ class Heap {
   heapDelete(elem) {
     let elemIndex = this.heap.indexOf(elem);
     let lastIndex = this.heap.length - 1;
+    let parent = Math.floor((elemIndex - 1) / 2);
 
     if (elem === -1) {
       console.error('Элемент не найден');
@@ -47,12 +48,17 @@ class Heap {
 
     [this.heap[elemIndex], this.heap[lastIndex]] = [this.heap[lastIndex], this.heap[elemIndex]];
     this.heap.pop();
-    this.maxHeapify(this.heap, elemIndex);
+
+    if (this.heap[elemIndex] < this.heap[parent]) {
+      this.maxHeapify(this.heap, elemIndex);
+    } else {
+      this.increaseKey(elemIndex, this.heap[elemIndex]);
+    }
   }
 
   increaseKey(i, key) {
     let parent = Math.floor((i - 1) / 2);
-    if (key > this.heap[i]) {
+    if (key < this.heap[i]) {
       console.error('Новый ключ меньше текущего');
       return;
     }
@@ -79,10 +85,12 @@ class Heap {
         largest = right;
       }
 
-      [arr[i], arr[largest]] = [arr[largest], arr[i]];
-      left = 2 * largest + 1;
-      right = 2 * largest + 2;
-      i = largest;
+      if (i !== largest) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]];
+        left = 2 * largest + 1;
+        right = 2 * largest + 2;
+        i = largest;
+      }
     }
   }
 }
@@ -95,3 +103,9 @@ heap.maxHeapInsert(20);
 heap.heapExtractMAX();
 heap.heapDelete(10);
 console.log(heap);
+
+const arr1 = [15, 7, 9, 1, 2, 3, 8];
+const heap1 = new Heap(arr1);
+console.log(heap1);
+heap1.heapDelete(2);
+console.log(heap1);

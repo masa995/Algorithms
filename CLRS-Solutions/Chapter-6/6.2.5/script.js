@@ -4,6 +4,7 @@ function maxHeapify(arr, i) {
   let largest;
 
   while ((arr[i] < arr[left]) || (arr[i] < arr[right])) {
+    i = largest
     if (left <= arr.length && arr[left] > arr[i]) {
       largest = left;
     }

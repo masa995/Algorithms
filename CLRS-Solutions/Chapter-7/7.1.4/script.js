@@ -1,7 +1,7 @@
 function partition(array, first, pivot) {
   let x = array[pivot];
   let i = first - 1;
-  for (let j = first; j < array.length - 2; j++) {
+  for (let j = first; j < array.length - 1; j++) {
     if (array[j] >= x) {
       i = i + 1;
       [array[i], array[j]] = [array[j], array[i]]; // swap

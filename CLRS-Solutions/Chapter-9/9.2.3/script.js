@@ -5,7 +5,7 @@ function randomElem(min, max) {
 
 function randomPartition(arr, firstI, lastI) {
   let pivot = randomElem(firstI, lastI);
-  [arr[lastI], arr[pivot]] = [arr[pivot], arr[lastI]]; //swap
+  [arr[lastI], arr[pivot]] = [arr[pivot], arr[lastI]];
   return partition(arr, firstI, lastI);
 }
 
@@ -16,40 +16,35 @@ function partition(arr, firstI, lastI) {
   for (let j = firstI; j < lastI; j++) {
     if (arr[j] <= x) {
       i = i + 1;
-      [arr[i], arr[j]] = [arr[j], arr[i]]; //swap
+      [arr[i], arr[j]] = [arr[j], arr[i]];
     }
   }
-  [arr[i + 1], arr[lastI]] = [arr[lastI], arr[i + 1]]; // swap
-  return lastI;
+  [arr[i + 1], arr[lastI]] = [arr[lastI], arr[i + 1]];
+  return i + 1;
 }
 
-/// Функция глючит =_=
-
-function randomSelectIterative(arr, i) {
+function randomSelectIterative(arr, k) {
   let firstI = 0;
   let lastI = arr.length - 1;
 
-  while (true) {
-    if (firstI === lastI) {
-      return arr[firstI];
-    }
+  while (firstI <= lastI) {
     let pivot = randomPartition(arr, firstI, lastI);
-    let k = pivot - firstI + 1;
-    if (i === k) {
-      return arr[pivot];
+
+    if (pivot == k - 1) {
+      return arr[pivot]
     }
 
-    if (i < k) {
+    if (pivot > k - 1) {
       lastI = pivot - 1;
     } else {
       firstI = pivot + 1;
-      i = i - k;
     }
   }
+  return console.error('Элемент не найден');
 }
 
-let numR = [1, 2, 2, 3, 4];
-let num = [2, 1, 4, 2, 3];
+let numR = [1, 2, 12, 33, 400];
+let num = [12, 1, 400, 2, 33];
 console.log(numR);
 console.log(num);
-console.log(randomSelectIterative(num, 4));
+console.log(randomSelectIterative(num, 3));

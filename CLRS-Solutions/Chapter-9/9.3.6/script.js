@@ -1,12 +1,6 @@
 function randomElem(min, max) {
-  let random = min + Math.random() * (max + 1 - min); // min и max встречается в 2раза меньше поэтому тут так мудренно
+  let random = min + Math.random() * (max + 1 - min);
   return Math.floor(random);
-}
-
-function randomPartition(arr, firstI, lastI) {
-  let pivot = randomElem(firstI, lastI);
-  [arr[lastI], arr[pivot]] = [arr[pivot], arr[lastI]]; //swap
-  return partition(arr, firstI, lastI);
 }
 
 function partition(arr, firstI, lastI) {
@@ -20,7 +14,13 @@ function partition(arr, firstI, lastI) {
     }
   }
   [arr[i + 1], arr[lastI]] = [arr[lastI], arr[i + 1]]; // swap
-  return i + 1; // это опорный элемент!
+  return i + 1;
+}
+
+function randomPartition(arr, firstI, lastI) {
+  let pivot = randomElem(firstI, lastI);
+  [arr[lastI], arr[pivot]] = [arr[pivot], arr[lastI]]; //swap
+  return partition(arr, firstI, lastI);
 }
 
 function select(arr, firstI, lastI, k) {
@@ -37,33 +37,38 @@ function select(arr, firstI, lastI, k) {
       firstI = pivot + 1;
     }
   }
-  return console.error('Элемент не найден');
+  return console.error('Not find');
 }
 
-let arrQuantiles = [];
-function kthQuantiles(arr, firstI, lastI, k) {
-
+function kthQuantilesRecurs(arr, k) {
   if (k === 1) {
-    return;
+    return [];
+  }
+
+  let median = []
+  let indexMedian = Math.floor(arr.length / 2);
+  let newK = Math.floor(k / 2);
+  median.push(select(arr, 0, arr.length - 1, indexMedian));
+
+  //for even k
+  if (k % 2 === 0) {
+    let arrL = arr.slice(0, indexMedian);
+    let arrR = arr.slice(indexMedian);
+    return [...kthQuantilesRecurs(arrL, newK), ...median, ...kthQuantilesRecurs(arrR, newK)];
   } else {
-    let sizeQuantiles = arr.length / k;
-    let i = Math.floor(k / 2) * sizeQuantiles;
-    let quantile = select(arr, firstI, lastI, i);
-    let kLeft = Math.floor(k / 2);
-    let kRight = k - Math.floor(k / 2);
+    let i = indexMedian - 1; //Left k
+    let j = indexMedian + 1; //Right k
+    let left = select(arr, 0, arr.length - 1, i);
+    let right = select(arr, 0, arr.length - 1, j);
+    let arrL = arr.slice(0, i);
+    let arrR = arr.slice(j);
 
-    arrQuantiles.push(quantile);
-
-    kthQuantiles(arr, firstI, quantile, kLeft);
-    kthQuantiles(arr, quantile + 1, lastI, kRight)
-
-    return arrQuantiles;
+    return [...kthQuantilesRecurs(arrL, newK), ...[left, right], ...kthQuantilesRecurs(arrR, newK)];
   }
 
 }
 
-let numR = [1, 2, 12, 25, 33, 100, 250, 400];
+let numSort = [1, 2, 12, 25, 33, 100, 250, 400];
 let num = [12, 1, 400, 25, 100, 2, 250, 33];
-console.log(numR);
-console.log(num);
-console.log(kthQuantiles(num, 0, num.length - 1, 4));
+console.log(numSort);
+console.log('Recurs: ' + kthQuantilesRecurs(num, 4));

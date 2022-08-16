@@ -1,7 +1,7 @@
 const arr = [1, 3, 6, 8, 9, 9, 9, 10];
 //const arr = [9, 30];
 //======================================================================================================================
-/**   РЕКУРСИВНЫЙ МЕТОД */
+/**   RECURSIVE METHOD */
 const low = -1;
 const hight = arr.length;
 
@@ -21,7 +21,7 @@ function binarySearchRecursive(arr, el, low, hight) {
 }
 
 //========================================================================================================================
-/**   ИТЕРАТИВНЫЙ МЕТОД*/
+/**   ITERATIVE METHOD*/
 function binarySearch(arr, el) {
   let low = -1;
   let hight = arr.length;

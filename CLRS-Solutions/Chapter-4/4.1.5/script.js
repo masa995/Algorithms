@@ -19,25 +19,13 @@ function getMaxSubarray(array) {
       currentLeft = i + 1;
     }
   }
+
   return {
     sum: best,
     left: left,
     right: right
   }
 }
-
-// function getMaxSubarray(arr) {
-//   let maxSum = 0;
-//   let partialSum = 0;
-
-//   for (let item of arr) { // для каждого элемента массива
-//     partialSum += item; // добавляем значение элемента к partialSum
-//     maxSum = Math.max(maxSum, partialSum); // запоминаем максимум на данный момент
-//     if (partialSum < 0) partialSum = 0; // ноль если отрицательное
-//   }
-
-//   return maxSum;
-// }
 
 const num = [100, -9, 2, -3, 5]; ////100
 //const num = [2, -1, 2, 3, -9]; ////6
